@@ -35,8 +35,8 @@ const PolicyEngine = {
     policies["DOCacheHost"] = { value: "<your-mcc-server-fqdn>", description: "FQDN or IP of the Connected Cache node" };
 
     // Cache server fallback delays (recommended)
-    policies["DelayCacheServerFallbackForeground"] = { value: "60 (seconds)", description: "Delay fallback to CDN for foreground downloads" };
-    policies["DelayCacheServerFallbackBackground"] = { value: "60 (seconds)", description: "Delay fallback to CDN for background downloads" };
+    policies["DelayCacheServerFallbackForeground"] = { value: "60 (seconds)", description: "Delay fallback to CDN for foreground downloads. 60s is a starting point — adjust based on testing in your environment." };
+    policies["DelayCacheServerFallbackBackground"] = { value: "60 (seconds)", description: "Delay fallback to CDN for background downloads. 60s is a starting point — adjust based on testing in your environment." };
 
     // VPN settings
     if (site.hasVpnClients) {
@@ -93,7 +93,7 @@ const PolicyEngine = {
       warnings.push({
         type: "multi-node",
         severity: "info",
-        message: `With ${totalDevices.toLocaleString()} devices, ${nodeCount} cache nodes are recommended. Deploy behind a load balancer or list multiple FQDNs/IPs in the DOCacheHost policy (comma-separated). Fallback to CDN occurs after the first cache server failure unless DelayCacheServerFallback policies are set.`
+        message: `With ${totalDevices.toLocaleString()} devices, ${nodeCount} cache nodes are recommended (based on an assumed limit of ~5,000 devices per node — see Methodology for details). Deploy behind a load balancer or list multiple FQDNs/IPs in the DOCacheHost policy (comma-separated). Fallback to CDN occurs after the first cache server failure unless DelayCacheServerFallback policies are set.`
       });
     }
 

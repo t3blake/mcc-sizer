@@ -17,7 +17,6 @@ const App = {
     document.getElementById("calculate-btn").addEventListener("click", () => this.calculate());
     document.getElementById("export-json-btn").addEventListener("click", () => this.export("json"));
     document.getElementById("export-csv-btn").addEventListener("click", () => this.export("csv"));
-    document.getElementById("export-pdf-btn").addEventListener("click", () => this.export("pdf"));
   },
 
   initContentDefaults() {
@@ -258,10 +257,11 @@ const App = {
             <h4>Estimated Throughput</h4>
             <table class="spec-table">
               <tr><td>Site Bandwidth</td><td>${s.network.bandwidthMbps.toLocaleString()} Mbps</td></tr>
-              <tr><td>Monthly Cacheable Content Capacity</td><td>~${s.network.monthlyThroughputGB.toLocaleString()} GB/month</td></tr>
-              <tr><td>Estimated Monthly Client Demand</td><td>~${s.contentEstimate.totalMonthlyGB.toLocaleString()} GB/month</td></tr>
-              <tr><td>Cache Utilization</td><td>${s.contentEstimate.utilizationPercent}%</td></tr>
+              <tr><td>Monthly Cacheable Content Capacity</td><td>~${s.network.monthlyThroughputGB.toLocaleString()} GB/month <span class="source-tag">MS Learn</span></td></tr>
+              <tr><td>Estimated Monthly Client Demand*</td><td>~${s.contentEstimate.totalMonthlyGB.toLocaleString()} GB/month</td></tr>
+              <tr><td>Cache Utilization*</td><td>${s.contentEstimate.utilizationPercent}%</td></tr>
             </table>
+            <p class="estimate-disclaimer">* Client demand and utilization are estimates based on assumed per-device content sizes, not official Microsoft figures. See <a href="#methodology">Methodology</a> for details.</p>
           </div>
 
           <div class="result-section">
@@ -353,7 +353,6 @@ const App = {
     switch (format) {
       case "json": ExportEngine.exportJSON(data); break;
       case "csv": ExportEngine.exportCSV(data); break;
-      case "pdf": ExportEngine.exportPDF(); break;
     }
   },
 

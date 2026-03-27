@@ -101,13 +101,56 @@
           <span>Export:</span>
           <button type="button" class="btn btn-secondary" id="export-json-btn">JSON</button>
           <button type="button" class="btn btn-secondary" id="export-csv-btn">CSV</button>
-          <button type="button" class="btn btn-secondary" id="export-pdf-btn">Print / PDF</button>
         </div>
 
         <div id="results-container"></div>
       </div>
 
       <div class="section" id="summary-section"></div>
+
+      <div class="section" id="methodology">
+        <h2>Methodology</h2>
+        <p>This tool combines official Microsoft guidance with reasonable assumptions to produce sizing recommendations. Below is a transparent breakdown of what comes from documentation and what is estimated.</p>
+
+        <h4>Hardware Specifications <span class="source-tag">MS Learn</span></h4>
+        <p>The hardware recommendations (CPU, RAM, disk, NIC) come directly from the <a href="https://learn.microsoft.com/en-us/windows/deployment/do/mcc-ent-prerequisites#recommended-host-machine-hardware-specifications" target="_blank" rel="noopener">MCC prerequisites page</a>. Microsoft provides three tiers of specifications. This tool maps them to site sizes as follows:</p>
+        <table class="spec-table">
+          <tr><td><strong>Tier 1 → Branch Office (&lt; 50 devices)</strong></td><td>4 cores, 8 GB RAM, 100 GB disk, 1 Gbps NIC</td></tr>
+          <tr><td><strong>Tier 2 → Small-Medium (50–500 devices)</strong></td><td>8 cores, 16 GB RAM, 500 GB disk, 5 Gbps NIC</td></tr>
+          <tr><td><strong>Tier 3 → Medium-Large (500–5,000 devices)</strong></td><td>16 cores, 32 GB RAM, 2x 200–500 GB disk, 10 Gbps NIC</td></tr>
+        </table>
+        <p class="methodology-note">Note: The MS Learn hardware table does not explicitly label each column by site size. The mapping above is inferred by correlating the hardware table with the site category descriptions and bandwidth table on the <a href="https://learn.microsoft.com/en-us/windows/deployment/do/mcc-ent-edu-overview#supported-scenarios-and-configurations" target="_blank" rel="noopener">overview page</a>.</p>
+
+        <h4>Bandwidth-to-Throughput <span class="source-tag">MS Learn</span></h4>
+        <p>The bandwidth-to-monthly-throughput values come directly from the <a href="https://learn.microsoft.com/en-us/windows/deployment/do/mcc-ent-edu-overview#large-enterprise-sites" target="_blank" rel="noopener">overview page</a>:</p>
+        <table class="spec-table">
+          <tr><td>50 Mbps → 180 GB/mo</td><td>100 Mbps → 360 GB/mo</td><td>250 Mbps → 900 GB/mo</td></tr>
+          <tr><td>500 Mbps → 1,800 GB/mo</td><td>1 Gbps → 3,600 GB/mo</td><td>3 Gbps → 10,800 GB/mo</td></tr>
+          <tr><td>5 Gbps → 18,000 GB/mo</td><td>9 Gbps → 32,400 GB/mo</td><td></td></tr>
+        </table>
+        <p class="methodology-note">When your bandwidth falls between these values, we use linear interpolation. This is our calculation, not a documented method.</p>
+
+        <h4>Multi-Node Sizing <span class="source-tag source-tag-assumption">Assumption</span></h4>
+        <p>Microsoft's largest documented site tier covers 500–5,000 devices. The docs state "there is no limit to the number of licensed machines that can concurrently download from a Connected Cache node." However, for sites with more than 5,000 devices, we recommend additional cache nodes based on scaling the largest hardware tier. This is a practical assumption — not an official limit — and should be validated through testing in your environment.</p>
+
+        <h4>Per-Device Content Estimates <span class="source-tag source-tag-assumption">Assumption</span></h4>
+        <p>Microsoft documents <em>which</em> content types are cacheable but does not publish per-device monthly content volumes. The estimates used in this tool are approximations:</p>
+        <table class="spec-table">
+          <tr><td>Windows Updates (feature + quality)</td><td>~500 MB/device/month</td></tr>
+          <tr><td>Microsoft 365 Apps (Office C2R)</td><td>~300 MB/device/month</td></tr>
+          <tr><td>Intune Win32 / LOB Apps</td><td>~200 MB/device/month</td></tr>
+          <tr><td>Microsoft Store Apps</td><td>~50 MB/device/month</td></tr>
+          <tr><td>Windows Defender Definitions</td><td>~150 MB/device/month</td></tr>
+          <tr><td>Autopilot Provisioning</td><td>~4,000 MB/device (one-time)</td></tr>
+        </table>
+        <p class="methodology-note">These are rough estimates. Actual volumes vary significantly by organization, update channel, and deployment configuration. They are used only to produce the "Estimated Monthly Client Demand" figure — the hardware sizing does not depend on these values.</p>
+
+        <h4>Delivery Optimization Policies <span class="source-tag">MS Learn</span></h4>
+        <p>All DO policy names, values, and descriptions come from the <a href="https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization-reference" target="_blank" rel="noopener">Delivery Optimization reference</a>. The cache server fallback delay of 60 seconds is a suggested starting point — Microsoft recommends setting this policy but does not specify a particular value. Adjust based on testing.</p>
+
+        <h4>OS &amp; General Requirements <span class="source-tag">MS Learn</span></h4>
+        <p>All operating system requirements, build numbers, WSL/Hyper-V dependencies, proxy warnings, port requirements, and NIC specifications come directly from the <a href="https://learn.microsoft.com/en-us/windows/deployment/do/mcc-ent-prerequisites" target="_blank" rel="noopener">MCC prerequisites page</a>.</p>
+      </div>
     </div>
 
   </main>

@@ -404,6 +404,62 @@ header p {
   margin-bottom: 4px;
 }
 
+/* ===== Methodology ===== */
+#methodology h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  margin: 18px 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#methodology h4:first-of-type {
+  margin-top: 12px;
+}
+
+#methodology p {
+  font-size: 0.88rem;
+  color: #444;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.methodology-note {
+  font-style: italic;
+  color: #666 !important;
+  font-size: 0.84rem !important;
+}
+
+.source-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #e8f4fd;
+  color: #0a5a94;
+  vertical-align: middle;
+  letter-spacing: 0.2px;
+}
+
+.source-tag-assumption {
+  background: #fff3e0;
+  color: #8a5e00;
+}
+
+.estimate-disclaimer {
+  font-size: 0.82rem;
+  color: #666;
+  font-style: italic;
+  margin-top: 6px;
+}
+
+.estimate-disclaimer a {
+  color: #0078d4;
+}
+
 /* ===== Footer ===== */
 footer {
   text-align: center;
