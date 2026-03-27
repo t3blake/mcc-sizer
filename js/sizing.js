@@ -75,7 +75,7 @@ const SizingEngine = {
   /**
    * Recommend OS based on site category and user preference.
    */
-  recommendOS(siteCategory, preference, hasExistingServer) {
+  recommendOS(siteCategory, preference) {
     if (preference === "linux") {
       return {
         primary: "Ubuntu 24.04",
@@ -85,7 +85,7 @@ const SizingEngine = {
     }
 
     if (preference === "windows" || preference === "no-preference") {
-      if (siteCategory.id === "branch" && !hasExistingServer) {
+      if (siteCategory.id === "branch") {
         return {
           primary: "Windows 11 (Build 22631.3296+)",
           note: "Can deploy directly to a client device at branch sites.",
@@ -129,7 +129,7 @@ const SizingEngine = {
     const monthlyThroughput = this.estimateMonthlyThroughput(site.bandwidthMbps || 0);
     const contentPerDevice = this.estimateContentPerDevice(contentTypeIds);
     const totalMonthlyContentGB = Math.round(totalDevices * contentPerDevice / 1024);
-    const osRecommendation = this.recommendOS(category, site.preferredOS || "no-preference", site.hasExistingServer);
+    const osRecommendation = this.recommendOS(category, site.preferredOS || "no-preference");
 
     return {
       siteName: site.name || "Unnamed Site",

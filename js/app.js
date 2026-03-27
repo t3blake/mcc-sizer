@@ -35,6 +35,9 @@ const App = {
     const id = this.siteCounter;
     const container = document.getElementById("sites-container");
 
+    // Copy values from the last site if one exists
+    const prev = this._getLastSiteValues();
+
     const siteDiv = document.createElement("div");
     siteDiv.className = "site-card";
     siteDiv.id = "site-" + id;
@@ -62,70 +65,65 @@ const App = {
 
         <div class="form-group">
           <label for="site-${id}-bandwidth">Internet Bandwidth (Mbps)</label>
-          <input type="number" id="site-${id}-bandwidth" min="1" value="100" />
+          <input type="number" id="site-${id}-bandwidth" min="1" value="${prev.bandwidth}" />
         </div>
 
         <div class="form-group">
           <label for="site-${id}-p2p">Allow Peer-to-Peer?</label>
           <select id="site-${id}-p2p" onchange="App.toggleP2PScope(${id})">
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
+            <option value="yes" ${prev.p2p === "yes" ? "selected" : ""}>Yes</option>
+            <option value="no" ${prev.p2p === "no" ? "selected" : ""}>No</option>
           </select>
         </div>
 
         <div class="form-group" id="site-${id}-p2p-scope-group">
           <label for="site-${id}-p2p-scope">P2P Scope</label>
           <select id="site-${id}-p2p-scope">
-            <option value="subnet">Same Subnet</option>
-            <option value="site">Same AD Site</option>
-            <option value="custom">Custom Group ID</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="site-${id}-server">Existing Server Hardware?</label>
-          <select id="site-${id}-server">
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
+            <option value="subnet" ${prev.p2pScope === "subnet" ? "selected" : ""}>Same Subnet</option>
+            <option value="site" ${prev.p2pScope === "site" ? "selected" : ""}>Same AD Site</option>
+            <option value="custom" ${prev.p2pScope === "custom" ? "selected" : ""}>Custom Group ID</option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="site-${id}-os">Preferred Cache Host OS</label>
           <select id="site-${id}-os">
-            <option value="no-preference">No Preference</option>
-            <option value="windows">Windows</option>
-            <option value="linux">Linux</option>
+            <option value="no-preference" ${prev.os === "no-preference" ? "selected" : ""}>No Preference</option>
+            <option value="windows" ${prev.os === "windows" ? "selected" : ""}>Windows</option>
+            <option value="linux" ${prev.os === "linux" ? "selected" : ""}>Linux</option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="site-${id}-vpn">VPN Clients at This Site?</label>
           <select id="site-${id}-vpn">
-            <option value="no">No</option>
-            <option value="yes">Yes</option>
+            <option value="no" ${prev.vpn === "no" ? "selected" : ""}>No</option>
+            <option value="yes" ${prev.vpn === "yes" ? "selected" : ""}>Yes</option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="site-${id}-proxy">Proxy in Use?</label>
           <select id="site-${id}-proxy">
-            <option value="no">No</option>
-            <option value="yes">Yes</option>
+            <option value="no" ${prev.proxy === "no" ? "selected" : ""}>No</option>
+            <option value="yes" ${prev.proxy === "yes" ? "selected" : ""}>Yes</option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="site-${id}-autopilot">Autopilot Provisioning Site?</label>
           <select id="site-${id}-autopilot">
-            <option value="no">No</option>
-            <option value="yes">Yes</option>
+            <option value="no" ${prev.autopilot === "no" ? "selected" : ""}>No</option>
+            <option value="yes" ${prev.autopilot === "yes" ? "selected" : ""}>Yes</option>
           </select>
         </div>
       </div>
     `;
 
     container.appendChild(siteDiv);
+
+    // Apply P2P scope visibility based on copied value
+    this.toggleP2PScope(id);
   },
 
   /**
@@ -174,7 +172,6 @@ const App = {
         bandwidthMbps: parseInt(document.getElementById("site-" + id + "-bandwidth").value) || 0,
         p2pEnabled: document.getElementById("site-" + id + "-p2p").value === "yes",
         p2pScope: document.getElementById("site-" + id + "-p2p-scope").value,
-        hasExistingServer: document.getElementById("site-" + id + "-server").value === "yes",
         preferredOS: document.getElementById("site-" + id + "-os").value,
         hasVpnClients: document.getElementById("site-" + id + "-vpn").value === "yes",
         hasProxy: document.getElementById("site-" + id + "-proxy").value === "yes",
@@ -368,6 +365,31 @@ const App = {
     const div = document.createElement("div");
     div.textContent = str;
     return div.innerHTML;
+  }
+};
+
+  /**
+   * Get values from the last site card to pre-fill a new one.
+   */
+  _getLastSiteValues() {
+    const defaults = { bandwidth: "100", p2p: "yes", p2pScope: "subnet", os: "no-preference", vpn: "no", proxy: "no", autopilot: "no" };
+    const container = document.getElementById("sites-container");
+    if (!container) return defaults;
+    const cards = container.querySelectorAll(".site-card");
+    if (cards.length === 0) return defaults;
+
+    const lastCard = cards[cards.length - 1];
+    const lastId = lastCard.id.replace("site-", "");
+
+    return {
+      bandwidth: document.getElementById("site-" + lastId + "-bandwidth").value || "100",
+      p2p: document.getElementById("site-" + lastId + "-p2p").value || "yes",
+      p2pScope: document.getElementById("site-" + lastId + "-p2p-scope").value || "subnet",
+      os: document.getElementById("site-" + lastId + "-os").value || "no-preference",
+      vpn: document.getElementById("site-" + lastId + "-vpn").value || "no",
+      proxy: document.getElementById("site-" + lastId + "-proxy").value || "no",
+      autopilot: document.getElementById("site-" + lastId + "-autopilot").value || "no"
+    };
   }
 };
 
