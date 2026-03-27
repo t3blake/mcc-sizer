@@ -41,7 +41,7 @@
 [CmdletBinding()]
 param(
     [ValidateSet("Category", "Subnet", "EntraIDCity", "None")]
-    [string]$GroupBy = "Category",
+    [string]$GroupBy = "None",
 
     [ValidateRange(8, 30)]
     [int]$SubnetSize = 24,
