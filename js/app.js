@@ -365,8 +365,7 @@ const App = {
     const div = document.createElement("div");
     div.textContent = str;
     return div.innerHTML;
-  }
-};
+  },
 
   /**
    * Get values from the last site card to pre-fill a new one.
