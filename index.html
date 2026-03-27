@@ -79,6 +79,22 @@
         <h2>Sites</h2>
         <p style="font-size:0.88rem; color:#555; margin-bottom:14px;">Add each physical location that will have a Connected Cache node. Configure device counts, bandwidth, and preferences per site.</p>
 
+        <div class="import-bar">
+          <div class="import-info">
+            <strong>Import from Intune:</strong> Run the <a href="Export-IntuneDevicesForMCC.ps1" download>PowerShell export script</a> against your Intune environment, then upload the CSV here.
+          </div>
+          <div class="import-controls">
+            <label class="btn btn-secondary btn-upload" for="csv-upload-input">
+              Upload CSV
+              <input type="file" id="csv-upload-input" accept=".csv" style="display:none" />
+            </label>
+            <a href="#" id="download-template-btn" class="btn btn-secondary">Download Template</a>
+          </div>
+          <div class="privacy-banner">
+            <span class="alert-icon">🔒</span> Your data is processed entirely in your browser. Nothing is uploaded, stored, or sent to any server.
+          </div>
+        </div>
+
         <div id="sites-container"></div>
 
         <button type="button" class="btn btn-add" id="add-site-btn">+ Add Another Site</button>

@@ -17,6 +17,8 @@ const App = {
     document.getElementById("calculate-btn").addEventListener("click", () => this.calculate());
     document.getElementById("export-json-btn").addEventListener("click", () => this.export("json"));
     document.getElementById("export-csv-btn").addEventListener("click", () => this.export("csv"));
+    document.getElementById("csv-upload-input").addEventListener("change", (e) => this.importCSV(e));
+    document.getElementById("download-template-btn").addEventListener("click", (e) => { e.preventDefault(); this.downloadTemplate(); });
   },
 
   initContentDefaults() {
@@ -354,6 +356,117 @@ const App = {
       case "json": ExportEngine.exportJSON(data); break;
       case "csv": ExportEngine.exportCSV(data); break;
     }
+  },
+
+  /**
+   * Import sites from a CSV file.
+   */
+  importCSV(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target.result;
+      const sites = this._parseCSV(text);
+
+      if (sites.length === 0) {
+        alert("No valid site data found in the CSV. Expected columns: SiteName, WiredClients, WirelessClients, BandwidthMbps");
+        return;
+      }
+
+      // Clear existing sites
+      document.getElementById("sites-container").innerHTML = "";
+      this.siteCounter = 0;
+
+      // Add a site card for each imported row
+      sites.forEach(site => {
+        this.addSite();
+        const id = this.siteCounter;
+        document.getElementById("site-" + id + "-name").value = site.SiteName || "";
+        document.getElementById("site-" + id + "-wired").value = site.WiredClients || 0;
+        document.getElementById("site-" + id + "-wireless").value = site.WirelessClients || 0;
+        if (site.BandwidthMbps) {
+          document.getElementById("site-" + id + "-bandwidth").value = site.BandwidthMbps;
+        }
+      });
+
+      alert(sites.length + " site(s) imported. Review the data and fill in any missing values (e.g., bandwidth), then click Generate.");
+    };
+    reader.readAsText(file);
+
+    // Reset input so the same file can be re-uploaded
+    event.target.value = "";
+  },
+
+  /**
+   * Parse CSV text into an array of objects.
+   */
+  _parseCSV(text) {
+    const lines = text.split(/\r?\n/).filter(line => line.trim());
+    if (lines.length < 2) return [];
+
+    const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g, ""));
+
+    const requiredCols = ["SiteName", "WiredClients", "WirelessClients"];
+    const missing = requiredCols.filter(c => !headers.includes(c));
+    if (missing.length > 0) {
+      alert("CSV is missing required columns: " + missing.join(", ") + ". Expected: SiteName, WiredClients, WirelessClients, BandwidthMbps");
+      return [];
+    }
+
+    return lines.slice(1).map(line => {
+      const values = this._parseCSVLine(line);
+      const obj = {};
+      headers.forEach((h, i) => {
+        obj[h] = values[i] || "";
+      });
+      return obj;
+    }).filter(row => row.SiteName);
+  },
+
+  /**
+   * Parse a single CSV line, handling quoted values.
+   */
+  _parseCSVLine(line) {
+    const values = [];
+    let current = "";
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (inQuotes && i + 1 < line.length && line[i + 1] === '"') {
+          current += '"';
+          i++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (ch === ',' && !inQuotes) {
+        values.push(current.trim());
+        current = "";
+      } else {
+        current += ch;
+      }
+    }
+    values.push(current.trim());
+    return values;
+  },
+
+  /**
+   * Download a blank CSV template.
+   */
+  downloadTemplate() {
+    const template = "SiteName,WiredClients,WirelessClients,BandwidthMbps\nSeattle HQ,400,200,1000\nDenver Branch,10,25,100\n";
+    const blob = new Blob([template], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "MCC-SiteData-Template.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   },
 
   /**

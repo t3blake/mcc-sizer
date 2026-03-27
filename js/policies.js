@@ -84,7 +84,7 @@ const PolicyEngine = {
     warnings.push({
       type: "port80",
       severity: "info",
-      message: "Port 80 must be free on the cache host — no other services (e.g., ConfigMgr distribution point) can use it."
+      message: "Port 80 must be free on the cache host — no other services or applications can use port 80."
     });
 
     // Multi-node warning
