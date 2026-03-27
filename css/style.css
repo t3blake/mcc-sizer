@@ -1,0 +1,491 @@
+/* ===== Reset & Base ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f4f5f7;
+  color: #1a1a1a;
+  line-height: 1.6;
+}
+
+a { color: #0078d4; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ===== Layout ===== */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ===== Header ===== */
+header {
+  background: #0078d4;
+  color: #fff;
+  padding: 24px 0;
+  margin-bottom: 32px;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+header p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-top: 4px;
+}
+
+/* ===== Sections ===== */
+.section {
+  background: #fff;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.section h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #0078d4;
+  border-bottom: 2px solid #0078d4;
+  padding-bottom: 6px;
+}
+
+/* ===== Content Type Grid ===== */
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.content-grid label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+}
+
+.content-grid label:hover {
+  background: #e8f4fd;
+}
+
+.content-grid input[type="checkbox"] {
+  margin-top: 3px;
+  accent-color: #0078d4;
+}
+
+.content-desc {
+  display: block;
+  font-size: 0.78rem;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* ===== Site Cards (Input) ===== */
+.site-card {
+  background: #fafbfc;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.site-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.site-card-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.btn-remove {
+  background: none;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  color: #888;
+  line-height: 1;
+  transition: all 0.15s;
+}
+
+.btn-remove:hover {
+  background: #fee;
+  border-color: #d93025;
+  color: #d93025;
+}
+
+/* ===== Form Grid ===== */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 4px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px 10px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: #fff;
+  transition: border-color 0.15s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #0078d4;
+  box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.15);
+}
+
+/* ===== Buttons ===== */
+.btn-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-primary {
+  background: #0078d4;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #106ebe;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #0078d4;
+  border: 1px solid #0078d4;
+}
+
+.btn-secondary:hover {
+  background: #e8f4fd;
+}
+
+.btn-add {
+  background: #fff;
+  color: #333;
+  border: 1px dashed #d0d7de;
+  width: 100%;
+  padding: 14px;
+  font-size: 0.9rem;
+}
+
+.btn-add:hover {
+  border-color: #0078d4;
+  color: #0078d4;
+  background: #f8fbfe;
+}
+
+/* ===== Results Section ===== */
+#results-section {
+  display: none;
+}
+
+/* ===== Export Bar ===== */
+.export-bar {
+  display: none;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 14px 0;
+}
+
+.export-bar span {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+/* ===== Result Cards ===== */
+.result-card {
+  background: #fff;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 20px;
+  page-break-inside: avoid;
+}
+
+.result-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.result-card-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0078d4;
+}
+
+.badge {
+  background: #e8f4fd;
+  color: #0078d4;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.result-category {
+  margin-bottom: 16px;
+  font-size: 0.92rem;
+}
+
+.category-desc {
+  display: block;
+  font-size: 0.82rem;
+  color: #666;
+  margin-top: 2px;
+}
+
+.result-section {
+  margin-bottom: 18px;
+}
+
+.result-section h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+/* ===== Tables ===== */
+.spec-table,
+.policy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.spec-table td,
+.policy-table td,
+.policy-table th {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.spec-table tr:last-child td,
+.policy-table tr:last-child td {
+  border-bottom: none;
+}
+
+.spec-table td:first-child {
+  font-weight: 600;
+  color: #444;
+  width: 40%;
+}
+
+.policy-table th {
+  font-weight: 600;
+  color: #444;
+  text-align: left;
+  background: #f8f9fa;
+  border-bottom: 2px solid #e1e4e8;
+}
+
+.policy-table code {
+  font-size: 0.82rem;
+  background: #f0f0f0;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+/* ===== Alerts ===== */
+.alert {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.alert-warning {
+  background: #fff8e5;
+  border: 1px solid #f0d060;
+  color: #735c0f;
+}
+
+.alert-info {
+  background: #e8f4fd;
+  border: 1px solid #bde0fe;
+  color: #0a3d62;
+}
+
+.alert-icon {
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+
+/* ===== OS Note ===== */
+.os-note {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+/* ===== Summary ===== */
+.summary-table td:first-child {
+  width: 50%;
+}
+
+.general-requirements {
+  margin-top: 16px;
+}
+
+.general-requirements h4 {
+  font-size: 0.92rem;
+  margin-bottom: 8px;
+}
+
+.general-requirements ul {
+  padding-left: 20px;
+  font-size: 0.88rem;
+  color: #444;
+}
+
+.general-requirements li {
+  margin-bottom: 4px;
+}
+
+/* ===== Footer ===== */
+footer {
+  text-align: center;
+  padding: 24px 0;
+  font-size: 0.82rem;
+  color: #888;
+  border-top: 1px solid #e1e4e8;
+  margin-top: 32px;
+}
+
+footer a {
+  color: #0078d4;
+}
+
+/* ===== Print Styles ===== */
+@media print {
+  body {
+    background: #fff;
+    font-size: 11pt;
+  }
+
+  header {
+    background: #0078d4 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    margin-bottom: 16px;
+  }
+
+  #input-section,
+  #calculate-section,
+  .export-bar,
+  .btn-remove,
+  .btn-add,
+  footer {
+    display: none !important;
+  }
+
+  #results-section {
+    display: block !important;
+  }
+
+  .result-card {
+    break-inside: avoid;
+    border: 1px solid #ccc;
+    margin-bottom: 12px;
+  }
+
+  .section {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .alert-warning {
+    background: #fff8e5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .alert-info {
+    background: #e8f4fd !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .export-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

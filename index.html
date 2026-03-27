@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Microsoft Connected Cache Sizing Calculator</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Microsoft Connected Cache Sizing Calculator</h1>
+      <p>Size your MCC for Enterprise and Education deployment based on Microsoft Learn guidance</p>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ===== Content Types ===== -->
+    <div id="input-section">
+      <div class="section">
+        <h2>Content Types</h2>
+        <p style="font-size:0.88rem; color:#555; margin-bottom:14px;">Select the Microsoft content types your organization will cache. This helps estimate per-device content volume.</p>
+
+        <div class="content-grid">
+          <label>
+            <input type="checkbox" id="content-windows-updates" />
+            <span>
+              Windows Updates (feature + quality)
+              <span class="content-desc">Monthly quality updates ~200-500 MB; annual feature updates ~3-4 GB</span>
+            </span>
+          </label>
+
+          <label>
+            <input type="checkbox" id="content-m365-apps" />
+            <span>
+              Microsoft 365 Apps (Office C2R)
+              <span class="content-desc">Monthly channel updates ~200-400 MB</span>
+            </span>
+          </label>
+
+          <label>
+            <input type="checkbox" id="content-intune-apps" />
+            <span>
+              Intune Win32 / LOB Apps
+              <span class="content-desc">Varies widely by organization</span>
+            </span>
+          </label>
+
+          <label>
+            <input type="checkbox" id="content-store-apps" />
+            <span>
+              Microsoft Store Apps
+              <span class="content-desc">Store app updates</span>
+            </span>
+          </label>
+
+          <label>
+            <input type="checkbox" id="content-defender" />
+            <span>
+              Windows Defender Definitions
+              <span class="content-desc">Frequent small definition updates</span>
+            </span>
+          </label>
+
+          <label>
+            <input type="checkbox" id="content-autopilot" />
+            <span>
+              Autopilot Provisioning
+              <span class="content-desc">Full OS + apps during provisioning (~4-8 GB per device)</span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ===== Sites ===== -->
+      <div class="section">
+        <h2>Sites</h2>
+        <p style="font-size:0.88rem; color:#555; margin-bottom:14px;">Add each physical location that will have a Connected Cache node. Configure device counts, bandwidth, and preferences per site.</p>
+
+        <div id="sites-container"></div>
+
+        <button type="button" class="btn btn-add" id="add-site-btn">+ Add Another Site</button>
+      </div>
+    </div>
+
+    <!-- ===== Calculate ===== -->
+    <div id="calculate-section" style="text-align:center; margin-bottom:32px;">
+      <button type="button" class="btn btn-primary" id="calculate-btn" style="padding:14px 48px; font-size:1rem;">
+        Generate Sizing Recommendations
+      </button>
+    </div>
+
+    <!-- ===== Results ===== -->
+    <div id="results-section">
+      <div class="section">
+        <h2>Sizing Results</h2>
+
+        <div class="export-bar" id="export-bar">
+          <span>Export:</span>
+          <button type="button" class="btn btn-secondary" id="export-json-btn">JSON</button>
+          <button type="button" class="btn btn-secondary" id="export-csv-btn">CSV</button>
+          <button type="button" class="btn btn-secondary" id="export-pdf-btn">Print / PDF</button>
+        </div>
+
+        <div id="results-container"></div>
+      </div>
+
+      <div class="section" id="summary-section"></div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>
+        Sizing guidance based on
+        <a href="https://learn.microsoft.com/en-us/windows/deployment/do/mcc-ent-edu-overview" target="_blank" rel="noopener">Microsoft Learn — Connected Cache for Enterprise</a>
+        and
+        <a href="https://learn.microsoft.com/en-us/windows/deployment/do/mcc-ent-prerequisites" target="_blank" rel="noopener">MCC Prerequisites</a>.
+        Not an official Microsoft tool. Recommendations are estimates — validate against your environment.
+      </p>
+      <p style="margin-top:6px;">Data last verified: March 2026</p>
+    </div>
+  </footer>
+
+  <!-- Scripts (order matters: data → engines → app) -->
+  <script src="js/data.js"></script>
+  <script src="js/sizing.js"></script>
+  <script src="js/policies.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
