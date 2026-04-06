@@ -65,12 +65,12 @@ const App = {
         </div>
 
         <div class="form-group">
-          <label for="site-${id}-bandwidth">Internet Bandwidth (Mbps)</label>
+          <label for="site-${id}-bandwidth">Internet Bandwidth (Mbps) <span class="label-hint" data-tooltip="Total internet bandwidth available at this site. Used to estimate monthly cacheable content throughput.">?</span></label>
           <input type="number" id="site-${id}-bandwidth" min="1" value="${prev.bandwidth}" />
         </div>
 
         <div class="form-group">
-          <label for="site-${id}-p2p">Allow Peer-to-Peer?</label>
+          <label for="site-${id}-p2p">Allow Peer-to-Peer? <span class="label-hint" data-tooltip="Whether devices at this site can share downloaded content with each other via Delivery Optimization peering, reducing cache node and WAN load.">?</span></label>
           <select id="site-${id}-p2p" onchange="App.toggleP2PScope(${id})">
             <option value="yes" ${prev.p2p === "yes" ? "selected" : ""}>Yes</option>
             <option value="no" ${prev.p2p === "no" ? "selected" : ""}>No</option>
@@ -78,7 +78,7 @@ const App = {
         </div>
 
         <div class="form-group" id="site-${id}-p2p-scope-group">
-          <label for="site-${id}-p2p-scope">P2P Scope</label>
+          <label for="site-${id}-p2p-scope">P2P Scope <span class="label-hint" data-tooltip="Controls which devices can peer with each other. Same Subnet = devices sharing a subnet. Same AD Site = devices in the same Active Directory site. Custom Group ID = manually defined group.">?</span></label>
           <select id="site-${id}-p2p-scope">
             <option value="subnet" ${prev.p2pScope === "subnet" ? "selected" : ""}>Same Subnet</option>
             <option value="site" ${prev.p2pScope === "site" ? "selected" : ""}>Same AD Site</option>
@@ -87,7 +87,7 @@ const App = {
         </div>
 
         <div class="form-group">
-          <label for="site-${id}-os">Preferred Cache Host OS</label>
+          <label for="site-${id}-os">Preferred Cache Host OS <span class="label-hint" data-tooltip="The OS for the cache node server. Linux (Ubuntu 24.04) has fewer dependencies. Windows requires WSL 2 and Hyper-V PowerShell tools.">?</span></label>
           <select id="site-${id}-os">
             <option value="no-preference" ${prev.os === "no-preference" ? "selected" : ""}>No Preference</option>
             <option value="windows" ${prev.os === "windows" ? "selected" : ""}>Windows</option>
@@ -96,7 +96,7 @@ const App = {
         </div>
 
         <div class="form-group">
-          <label for="site-${id}-vpn">VPN Clients at This Site?</label>
+          <label for="site-${id}-vpn">VPN Clients at This Site? <span class="label-hint" data-tooltip="If devices connect over VPN, P2P peering may not work effectively since VPN clients often don't share a LAN with on-site devices.">?</span></label>
           <select id="site-${id}-vpn">
             <option value="no" ${prev.vpn === "no" ? "selected" : ""}>No</option>
             <option value="yes" ${prev.vpn === "yes" ? "selected" : ""}>Yes</option>
@@ -104,7 +104,7 @@ const App = {
         </div>
 
         <div class="form-group">
-          <label for="site-${id}-proxy">Proxy in Use?</label>
+          <label for="site-${id}-proxy">Proxy in Use? <span class="label-hint" data-tooltip="Proxies can interfere with MCC traffic. If a proxy is in use, byte-range requests must be allowed and the cache node hostname should be added to the proxy allow list.">?</span></label>
           <select id="site-${id}-proxy">
             <option value="no" ${prev.proxy === "no" ? "selected" : ""}>No</option>
             <option value="yes" ${prev.proxy === "yes" ? "selected" : ""}>Yes</option>
@@ -112,7 +112,7 @@ const App = {
         </div>
 
         <div class="form-group">
-          <label for="site-${id}-autopilot">Autopilot Provisioning Site?</label>
+          <label for="site-${id}-autopilot">Autopilot Provisioning Site? <span class="label-hint" data-tooltip="Autopilot devices download the full OS and apps during provisioning (~4-8 GB per device), which significantly increases cache demand.">?</span></label>
           <select id="site-${id}-autopilot">
             <option value="no" ${prev.autopilot === "no" ? "selected" : ""}>No</option>
             <option value="yes" ${prev.autopilot === "yes" ? "selected" : ""}>Yes</option>
@@ -120,7 +120,7 @@ const App = {
         </div>
 
         <div class="form-group">
-          <label for="site-${id}-simultaneity">Simultaneous Download % <span class="label-hint" title="Percentage of devices expected to download content at the same time. 100% is worst-case (all devices at once). Lower values model staggered update rings.">?</span></label>
+          <label for="site-${id}-simultaneity">Simultaneous Download % <span class="label-hint" data-tooltip="Percentage of devices expected to download content at the same time. 100% is worst-case (all devices at once). Use lower values to model staggered update rings.">?</span></label>
           <input type="number" id="site-${id}-simultaneity" min="1" max="100" value="${prev.simultaneity}" />
         </div>
       </div>
