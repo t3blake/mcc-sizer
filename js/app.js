@@ -112,15 +112,7 @@ const App = {
         </div>
 
         <div class="form-group">
-          <label for="site-${id}-autopilot">Autopilot Provisioning Site? <span class="label-hint" data-tooltip="Autopilot devices download the full OS and apps during provisioning (~4-8 GB per device), which significantly increases cache demand.">?</span></label>
-          <select id="site-${id}-autopilot">
-            <option value="no" ${prev.autopilot === "no" ? "selected" : ""}>No</option>
-            <option value="yes" ${prev.autopilot === "yes" ? "selected" : ""}>Yes</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="site-${id}-simultaneity">Simultaneous Download % <span class="label-hint" data-tooltip="Percentage of devices expected to download content at the same time. 100% is worst-case (all devices at once). Use lower values to model staggered update rings.">?</span></label>
+          <label for="site-${id}-simultaneity">Simultaneous Download % <span class="label-hint" data-tooltip="Percentage of devices expected to download at the same time. Defaults to 100% (worst-case). Adjust based on your update ring configuration — e.g., 4 rings with staggered schedules might mean ~25%.">?</span></label>
           <input type="number" id="site-${id}-simultaneity" min="1" max="100" value="${prev.simultaneity}" />
         </div>
       </div>
@@ -181,7 +173,6 @@ const App = {
         preferredOS: document.getElementById("site-" + id + "-os").value,
         hasVpnClients: document.getElementById("site-" + id + "-vpn").value === "yes",
         hasProxy: document.getElementById("site-" + id + "-proxy").value === "yes",
-        isAutopilotSite: document.getElementById("site-" + id + "-autopilot").value === "yes",
         simultaneityPct: parseInt(document.getElementById("site-" + id + "-simultaneity").value) || 100
       });
     });
@@ -513,7 +504,7 @@ const App = {
    * Get values from the last site card to pre-fill a new one.
    */
   _getLastSiteValues() {
-    const defaults = { bandwidth: "100", p2p: "yes", p2pScope: "subnet", os: "no-preference", vpn: "no", proxy: "no", autopilot: "no", simultaneity: "100" };
+    const defaults = { bandwidth: "100", p2p: "yes", p2pScope: "subnet", os: "no-preference", vpn: "no", proxy: "no", simultaneity: "100" };
     const container = document.getElementById("sites-container");
     if (!container) return defaults;
     const cards = container.querySelectorAll(".site-card");
@@ -529,8 +520,7 @@ const App = {
       os: document.getElementById("site-" + lastId + "-os").value || "no-preference",
       vpn: document.getElementById("site-" + lastId + "-vpn").value || "no",
       simultaneity: document.getElementById("site-" + lastId + "-simultaneity").value || "100",
-      proxy: document.getElementById("site-" + lastId + "-proxy").value || "no",
-      autopilot: document.getElementById("site-" + lastId + "-autopilot").value || "no"
+      proxy: document.getElementById("site-" + lastId + "-proxy").value || "no"
     };
   }
 };

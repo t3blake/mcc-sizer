@@ -75,11 +75,6 @@ const PolicyEngine = {
       });
     }
 
-    // Autopilot note
-    if (site.isAutopilotSite) {
-      info.push("This site uses Autopilot provisioning. During provisioning events, bandwidth demand will spike significantly as devices download the full OS image and apps (~4-8 GB per device). Ensure cache node disk and bandwidth are sized for burst provisioning scenarios.");
-    }
-
     // General requirements warnings (always)
     warnings.push({
       type: "port80",
