@@ -247,13 +247,6 @@ header p {
 }
 
 /* ===== Buttons ===== */
-.btn-row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 8px;
-}
-
 .btn {
   padding: 10px 20px;
   border: none;

@@ -114,13 +114,6 @@ const ExportEngine = {
   },
 
   /**
-   * Print the results section for PDF export via browser print dialog.
-   */
-  exportPDF() {
-    window.print();
-  },
-
-  /**
    * Trigger file download in the browser.
    */
   _download(content, filename, mimeType) {
