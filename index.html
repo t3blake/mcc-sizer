@@ -168,14 +168,14 @@
         </table>
         <p class="methodology-note">These are rough estimates. Actual volumes vary significantly by organization, update channel, and deployment configuration. They are used only to produce the "Estimated Monthly Client Demand" figure — the hardware sizing does not depend on these values.</p>
 
-        <h4 id="methodology-peak">Peak Delivery Analysis <span class="source-tag">Product Group Guidance</span></h4>
-        <p>The Peak Delivery Analysis models what happens when many devices download content from the cache simultaneously. This calculation is based on guidance from the MCC product group:</p>
+        <h4 id="methodology-peak">Peak Delivery Analysis <span class="source-tag">Field Observations</span></h4>
+        <p>The Peak Delivery Analysis models what happens when many devices download content from the cache simultaneously. This calculation is based on field observations from real-world deployments:</p>
         <ol>
           <li><strong>Cache throughput is shared:</strong> The cache node's sustained delivery rate (its NIC Gbps spec) is divided across all simultaneously downloading devices.</li>
           <li><strong>Per-device bandwidth:</strong> <code>cache throughput (Kbps) ÷ simultaneous device count = per-device bandwidth (Kbps)</code></li>
           <li><strong>Download time:</strong> <code>content size per device ÷ per-device bandwidth = download time</code></li>
         </ol>
-        <p><strong>Example (from product group):</strong> A site with 15,244 devices and a cache node delivering 5 Gbps. If all devices request 500 MB at the same time: 5,000,000 Kbps ÷ 15,244 = ~327 Kbps per device, giving a download time of ~3:24 per device.</p>
+        <p><strong>Example:</strong> A site with 15,244 devices and a cache node delivering 5 Gbps. If all devices request 500 MB at the same time: 5,000,000 Kbps ÷ 15,244 = ~327 Kbps per device, giving a download time of ~3:24 per device.</p>
         <p class="methodology-note"><strong>Key mitigations:</strong> This is a worst-case scenario. In practice, configuring update rings to trigger updates at different times across the fleet significantly reduces simultaneous demand. Delivery Optimization peering (if enabled) further offloads the cache node by letting devices source content from each other. Use the "Simultaneous Download %" input to model more realistic scenarios.</p>
 
         <h4>Delivery Optimization Policies <span class="source-tag">MS Learn</span></h4>

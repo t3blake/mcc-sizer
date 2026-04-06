@@ -49,7 +49,7 @@ The MS Learn hardware table does not explicitly label columns by site size. The 
 
 When bandwidth falls between these values, the tool uses linear interpolation (our calculation, not documented).
 
-### Peak delivery analysis — from MCC product group guidance
+### Peak delivery analysis — from field observations
 
 Models what happens when many devices download simultaneously from the cache node:
 
@@ -134,7 +134,7 @@ Static site with no backend. Designed for GitHub Pages:
 | [MCC Enterprise Overview](https://learn.microsoft.com/en-us/windows/deployment/do/mcc-ent-edu-overview) | Site categories, bandwidth-to-throughput table |
 | [MCC Enterprise Prerequisites](https://learn.microsoft.com/en-us/windows/deployment/do/mcc-ent-prerequisites) | Hardware specs, OS requirements, port/NIC requirements |
 | [Delivery Optimization Reference](https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization-reference) | Policy names, values, and descriptions |
-| MCC Product Group | Peak delivery analysis methodology |
+| Field observations | Peak delivery analysis methodology |
 
 ## License
 

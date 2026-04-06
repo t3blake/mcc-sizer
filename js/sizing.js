@@ -123,7 +123,7 @@ const SizingEngine = {
    * Calculate peak concurrent delivery scenario.
    *
    * Models the worst-case where devices download simultaneously from the cache
-   * node, based on guidance from the MCC product group:
+   * node, based on field observations and deployment experience:
    *   - Cache throughput (Gbps from NIC spec) is shared across all active devices
    *   - Per-device bandwidth = cache throughput / simultaneous device count
    *   - Download time = content size per device / per-device bandwidth

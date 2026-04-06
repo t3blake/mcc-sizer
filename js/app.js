@@ -265,7 +265,7 @@ const App = {
 
           <div class="result-section">
             <h4>Peak Delivery Analysis <span class="source-tag source-tag-assumption">Scenario</span></h4>
-            <p class="peak-intro">What happens when devices download at the same time? This models cache throughput shared across simultaneous clients — based on <a href="#methodology-peak">MCC product group guidance</a>.</p>
+            <p class="peak-intro">What happens when devices download at the same time? This models cache throughput shared across simultaneous clients — based on <a href="#methodology-peak">field observations</a>.</p>
             <table class="spec-table">
               <tr><td>Cache Sustained Throughput</td><td>${s.network.nicGbps} Gbps${s.nodeCount > 1 ? " × " + s.nodeCount + " nodes" : ""}</td></tr>
               <tr><td>Simultaneous Devices</td><td>${s.peakDelivery.simultaneousDevices.toLocaleString()} of ${s.totalDevices.toLocaleString()} (${s.peakDelivery.simultaneityPct}%)</td></tr>
