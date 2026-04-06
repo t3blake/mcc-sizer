@@ -410,9 +410,31 @@ const App = {
         if (site.BandwidthMbps) {
           document.getElementById("site-" + id + "-bandwidth").value = site.BandwidthMbps;
         }
+        if (site.P2P && ["yes", "no"].includes(site.P2P.toLowerCase())) {
+          document.getElementById("site-" + id + "-p2p").value = site.P2P.toLowerCase();
+          this.toggleP2PScope(id);
+        }
+        if (site.P2PScope && ["subnet", "site", "custom"].includes(site.P2PScope.toLowerCase())) {
+          document.getElementById("site-" + id + "-p2p-scope").value = site.P2PScope.toLowerCase();
+        }
+        if (site.PreferredOS && ["windows", "linux", "no-preference"].includes(site.PreferredOS.toLowerCase())) {
+          document.getElementById("site-" + id + "-os").value = site.PreferredOS.toLowerCase();
+        }
+        if (site.VPN && ["yes", "no"].includes(site.VPN.toLowerCase())) {
+          document.getElementById("site-" + id + "-vpn").value = site.VPN.toLowerCase();
+        }
+        if (site.Proxy && ["yes", "no"].includes(site.Proxy.toLowerCase())) {
+          document.getElementById("site-" + id + "-proxy").value = site.Proxy.toLowerCase();
+        }
+        if (site.SimultaneousPct) {
+          const pct = parseInt(site.SimultaneousPct);
+          if (pct >= 1 && pct <= 100) {
+            document.getElementById("site-" + id + "-simultaneity").value = pct;
+          }
+        }
       });
 
-      alert(sites.length + " site(s) imported. Review the data and fill in any missing values (e.g., bandwidth), then click Generate.");
+      alert(sites.length + " site(s) imported. Review the data and adjust any settings, then click Generate.");
     };
     reader.readAsText(file);
 
@@ -436,7 +458,7 @@ const App = {
       return [];
     }
 
-    return lines.slice(1).map(line => {
+    return lines.slice(1).filter(line => !line.startsWith("#")).map(line => {
       const values = this._parseCSVLine(line);
       const obj = {};
       headers.forEach((h, i) => {
@@ -478,7 +500,15 @@ const App = {
    * Download a blank CSV template.
    */
   downloadTemplate() {
-    const template = "SiteName,WiredClients,WirelessClients,BandwidthMbps\nSeattle HQ,400,200,1000\nDenver Branch,10,25,100\n";
+    const template = [
+      "SiteName,WiredClients,WirelessClients,BandwidthMbps,P2P,P2PScope,PreferredOS,VPN,Proxy,SimultaneousPct",
+      "# Required: SiteName. All other columns are optional (defaults shown in row 2).",
+      "# P2P: yes/no. P2PScope: subnet/site/custom. PreferredOS: windows/linux/no-preference.",
+      "# VPN: yes/no. Proxy: yes/no. SimultaneousPct: 1-100 (default 100).",
+      "# Delete these comment rows before uploading.",
+      "Seattle HQ,400,200,1000,yes,subnet,no-preference,no,no,100",
+      "Denver Branch,10,25,100,yes,subnet,no-preference,no,no,100"
+    ].join("\n") + "\n";
     const blob = new Blob([template], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

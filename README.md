@@ -115,9 +115,32 @@ Results can be exported as:
 - **CSV** — spreadsheet-friendly format
 - **PDF** — via browser print dialog (print-optimized stylesheet included)
 
-## Importing from Intune
+## Bulk import via CSV
 
-A [PowerShell export script](Export-IntuneDevicesForMCC.ps1) is included. Run it against your Intune environment to export device counts by site, then upload the resulting CSV into the tool. See the script header for usage and required Graph API permissions.
+For organizations with many sites, download the CSV template from the tool and fill in your site data. Upload the completed CSV to populate all site cards at once.
+
+**Template columns:**
+
+| Column | Required | Values | Default |
+|---|---|---|---|
+| SiteName | Yes | Free text | — |
+| WiredClients | No | Number | 0 |
+| WirelessClients | No | Number | 0 |
+| BandwidthMbps | No | Number | 100 |
+| P2P | No | yes / no | yes |
+| P2PScope | No | subnet / site / custom | subnet |
+| PreferredOS | No | windows / linux / no-preference | no-preference |
+| VPN | No | yes / no | no |
+| Proxy | No | yes / no | no |
+| SimultaneousPct | No | 1–100 | 100 |
+
+Only `SiteName` is required — all other columns will use defaults if omitted or left blank.
+
+**Where to get your device counts:**
+- **Intune portal** → Devices → All devices → filter by OS = Windows, then export and group by location/category
+- **Configuration Manager (SCCM)** → Device Collections by site or boundary group
+- **Active Directory** → Computer objects by OU or AD site
+- **Network team** → DHCP lease counts or NAC data per site
 
 ## Hosting
 
