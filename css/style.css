@@ -15,6 +15,37 @@ body {
 a { color: #0078d4; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
+/* ===== Disclaimer Banner ===== */
+.disclaimer-banner {
+  background: #fff3cd;
+  border-bottom: 2px solid #ffca2c;
+  padding: 12px 0;
+  font-size: 0.88rem;
+  color: #664d03;
+  line-height: 1.5;
+}
+
+.disclaimer-banner .container {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.disclaimer-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.disclaimer-banner a {
+  color: #664d03;
+  text-decoration: underline;
+}
+
+.disclaimer-banner a:hover {
+  color: #3d2e02;
+}
+
 /* ===== Layout ===== */
 .container {
   max-width: 960px;
