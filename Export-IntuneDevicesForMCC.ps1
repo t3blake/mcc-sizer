@@ -50,7 +50,7 @@ param(
 )
 
 # ── Module check ──
-if (-not (Get-Module -ListAvailable -Name Microsoft.Graph.DeviceManagement)) {
+if (-not (Get-Module -ListAvailable -Name Microsoft.Graph.Authentication)) {
     Write-Host "Microsoft.Graph module not found. Installing..." -ForegroundColor Yellow
     Install-Module Microsoft.Graph -Scope CurrentUser -Force -AllowClobber
 }
@@ -73,7 +73,7 @@ Connect-MgGraph -Scopes $scopes -NoWelcome
 Write-Host "Querying Intune managed devices..." -ForegroundColor Cyan
 
 $allDevices = @()
-$uri = "https://graph.microsoft.com/v1.0/deviceManagement/managedDevices?`$filter=operatingSystem eq 'Windows'&`$select=id,deviceName,managedDeviceName,operatingSystem,wiFiMacAddress,ethernetMacAddress,deviceCategoryDisplayName,userId"
+$uri = "https://graph.microsoft.com/v1.0/deviceManagement/managedDevices?`$filter=operatingSystem eq 'Windows'&`$select=id,operatingSystem,wiFiMacAddress,ethernetMacAddress,deviceCategoryDisplayName,userId"
 
 do {
     $response = Invoke-MgGraphRequest -Method GET -Uri $uri
@@ -103,14 +103,28 @@ if ($GroupBy -eq "Subnet") {
     $counter = 0
     foreach ($device in $allDevices) {
         $counter++
-        try {
-            $detailUri = "https://graph.microsoft.com/beta/deviceManagement/managedDevices/$($device.id)?`$select=id,hardwareInformation"
-            $detail = Invoke-MgGraphRequest -Method GET -Uri $detailUri -ErrorAction SilentlyContinue
-            if ($detail.hardwareInformation -and $detail.hardwareInformation.ipAddressV4) {
-                $deviceIPs[$device.id] = $detail.hardwareInformation.ipAddressV4
+        $retries = 0
+        $maxRetries = 3
+        while ($retries -lt $maxRetries) {
+            try {
+                $detailUri = "https://graph.microsoft.com/beta/deviceManagement/managedDevices/$($device.id)?`$select=id,hardwareInformation"
+                $detail = Invoke-MgGraphRequest -Method GET -Uri $detailUri -ErrorAction Stop
+                if ($detail.hardwareInformation -and $detail.hardwareInformation.ipAddressV4) {
+                    $deviceIPs[$device.id] = $detail.hardwareInformation.ipAddressV4
+                }
+                break
+            } catch {
+                if ($_.Exception.Message -match '429' -or $_.Exception.Message -match 'throttle') {
+                    $retries++
+                    $backoff = [math]::Pow(2, $retries) * 2
+                    if ($retries -lt $maxRetries) {
+                        Write-Host "  Throttled — waiting $($backoff)s before retry ($retries/$maxRetries)..." -ForegroundColor Yellow
+                        Start-Sleep -Seconds $backoff
+                    }
+                } else {
+                    break  # Non-throttle error, skip device
+                }
             }
-        } catch {
-            # Skip devices where we can't get IP
         }
 
         if ($counter % 100 -eq 0) {
@@ -153,11 +167,13 @@ if ($GroupBy -eq "EntraIDCity") {
 }
 
 # ── Helper: Get connection type ──
+# Returns Wired, Wireless, or Unknown.
+# Devices with both MAC addresses are classified as Wired (primary connection)
+# to avoid double-counting in the sizing calculator.
 function Get-ConnectionType {
     param($device)
     $hasEthernet = -not [string]::IsNullOrWhiteSpace($device.ethernetMacAddress)
     $hasWifi = -not [string]::IsNullOrWhiteSpace($device.wiFiMacAddress)
-    if ($hasEthernet -and $hasWifi) { return "Both" }
     if ($hasEthernet) { return "Wired" }
     if ($hasWifi) { return "Wireless" }
     return "Unknown"
@@ -230,7 +246,6 @@ foreach ($device in $allDevices) {
     switch ($connType) {
         "Wired"    { $siteGroups[$siteName].Wired++ }
         "Wireless" { $siteGroups[$siteName].Wireless++ }
-        "Both"     { $siteGroups[$siteName].Wired++; $siteGroups[$siteName].Wireless++ }
         "Unknown"  { $siteGroups[$siteName].Unknown++ }
     }
     $siteGroups[$siteName].Total++
