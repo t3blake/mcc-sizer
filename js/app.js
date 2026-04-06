@@ -118,6 +118,11 @@ const App = {
             <option value="yes" ${prev.autopilot === "yes" ? "selected" : ""}>Yes</option>
           </select>
         </div>
+
+        <div class="form-group">
+          <label for="site-${id}-simultaneity">Simultaneous Download % <span class="label-hint" title="Percentage of devices expected to download content at the same time. 100% is worst-case (all devices at once). Lower values model staggered update rings.">?</span></label>
+          <input type="number" id="site-${id}-simultaneity" min="1" max="100" value="${prev.simultaneity}" />
+        </div>
       </div>
     `;
 
@@ -176,7 +181,8 @@ const App = {
         preferredOS: document.getElementById("site-" + id + "-os").value,
         hasVpnClients: document.getElementById("site-" + id + "-vpn").value === "yes",
         hasProxy: document.getElementById("site-" + id + "-proxy").value === "yes",
-        isAutopilotSite: document.getElementById("site-" + id + "-autopilot").value === "yes"
+        isAutopilotSite: document.getElementById("site-" + id + "-autopilot").value === "yes",
+        simultaneityPct: parseInt(document.getElementById("site-" + id + "-simultaneity").value) || 100
       });
     });
 
@@ -264,6 +270,30 @@ const App = {
               <tr><td>Cache Utilization*</td><td>${s.contentEstimate.utilizationPercent}%</td></tr>
             </table>
             <p class="estimate-disclaimer">* Client demand and utilization are estimates based on assumed per-device content sizes, not official Microsoft figures. See <a href="#methodology">Methodology</a> for details.</p>
+          </div>
+
+          <div class="result-section">
+            <h4>Peak Delivery Analysis <span class="source-tag source-tag-assumption">Scenario</span></h4>
+            <p class="peak-intro">What happens when devices download at the same time? This models cache throughput shared across simultaneous clients — based on <a href="#methodology-peak">MCC product group guidance</a>.</p>
+            <table class="spec-table">
+              <tr><td>Cache Sustained Throughput</td><td>${s.network.nicGbps} Gbps${s.nodeCount > 1 ? " × " + s.nodeCount + " nodes" : ""}</td></tr>
+              <tr><td>Simultaneous Devices</td><td>${s.peakDelivery.simultaneousDevices.toLocaleString()} of ${s.totalDevices.toLocaleString()} (${s.peakDelivery.simultaneityPct}%)</td></tr>
+              <tr><td>Per-Device Bandwidth</td><td>~${s.peakDelivery.perDeviceKbps.toLocaleString()} Kbps</td></tr>
+              <tr><td>Daily Content per Device</td><td>~${s.peakDelivery.contentPerDeviceMB.toLocaleString()} MB</td></tr>
+              <tr><td>Download Time per Device</td><td>${s.peakDelivery.downloadTimeFormatted}</td></tr>
+            </table>
+            <div class="peak-walkthrough">
+              <strong>How this is calculated:</strong>
+              <ol>
+                ${s.peakDelivery.insights.map(i => `<li>${this._escapeHtml(i)}</li>`).join("")}
+              </ol>
+            </div>
+            <div class="peak-mitigations">
+              <strong>Mitigations:</strong>
+              <ul>
+                ${s.peakDelivery.mitigations.map(m => `<li>${this._escapeHtml(m)}</li>`).join("")}
+              </ul>
+            </div>
           </div>
 
           <div class="result-section">
@@ -483,7 +513,7 @@ const App = {
    * Get values from the last site card to pre-fill a new one.
    */
   _getLastSiteValues() {
-    const defaults = { bandwidth: "100", p2p: "yes", p2pScope: "subnet", os: "no-preference", vpn: "no", proxy: "no", autopilot: "no" };
+    const defaults = { bandwidth: "100", p2p: "yes", p2pScope: "subnet", os: "no-preference", vpn: "no", proxy: "no", autopilot: "no", simultaneity: "100" };
     const container = document.getElementById("sites-container");
     if (!container) return defaults;
     const cards = container.querySelectorAll(".site-card");
@@ -498,6 +528,7 @@ const App = {
       p2pScope: document.getElementById("site-" + lastId + "-p2p-scope").value || "subnet",
       os: document.getElementById("site-" + lastId + "-os").value || "no-preference",
       vpn: document.getElementById("site-" + lastId + "-vpn").value || "no",
+      simultaneity: document.getElementById("site-" + lastId + "-simultaneity").value || "100",
       proxy: document.getElementById("site-" + lastId + "-proxy").value || "no",
       autopilot: document.getElementById("site-" + lastId + "-autopilot").value || "no"
     };

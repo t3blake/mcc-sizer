@@ -120,6 +120,101 @@ const SizingEngine = {
   },
 
   /**
+   * Calculate peak concurrent delivery scenario.
+   *
+   * Models the worst-case where devices download simultaneously from the cache
+   * node, based on guidance from the MCC product group:
+   *   - Cache throughput (Gbps from NIC spec) is shared across all active devices
+   *   - Per-device bandwidth = cache throughput / simultaneous device count
+   *   - Download time = content size per device / per-device bandwidth
+   *
+   * Mitigations:
+   *   - Update rings stagger downloads so not all devices pull at once
+   *   - Peer-to-peer (DO peering) offloads the cache node further
+   *
+   * @param {number} totalDevices      Total device count at the site
+   * @param {number} cacheGbps         Sustained cache delivery rate (NIC Gbps)
+   * @param {number} contentPerDeviceMB Daily or per-cycle content per device (MB)
+   * @param {number} simultaneityPct   % of devices downloading at the same time (1-100)
+   * @param {boolean} p2pEnabled       Whether peering is enabled at this site
+   * @param {number} nodeCount         Number of cache nodes
+   */
+  calculatePeakDelivery(totalDevices, cacheGbps, contentPerDeviceMB, simultaneityPct, p2pEnabled, nodeCount) {
+    const simultaneityFactor = Math.max(1, Math.min(100, simultaneityPct || 100)) / 100;
+    const simultaneousDevices = Math.max(1, Math.ceil(totalDevices * simultaneityFactor));
+
+    // Total sustained throughput across all cache nodes in Kbps
+    const totalCacheKbps = cacheGbps * nodeCount * 1_000_000;
+
+    // Per-device bandwidth when all simultaneous devices are pulling content
+    const perDeviceKbps = totalCacheKbps / simultaneousDevices;
+
+    // Content size in Kb
+    const contentKb = contentPerDeviceMB * 8 * 1024; // MB → Kb
+
+    // Download time in seconds
+    const downloadTimeSec = perDeviceKbps > 0 ? contentKb / perDeviceKbps : 0;
+
+    // Format as HH:MM:SS
+    const hours = Math.floor(downloadTimeSec / 3600);
+    const minutes = Math.floor((downloadTimeSec % 3600) / 60);
+    const seconds = Math.floor(downloadTimeSec % 60);
+    const downloadTimeFormatted = `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+    // Build insight messages explaining the math
+    const insights = [];
+
+    insights.push(
+      `Cache throughput: ${cacheGbps} Gbps${nodeCount > 1 ? ` × ${nodeCount} nodes` : ""} = ${totalCacheKbps.toLocaleString()} Kbps total`
+    );
+
+    if (simultaneityPct < 100) {
+      insights.push(
+        `Simultaneous devices: ${simultaneousDevices.toLocaleString()} of ${totalDevices.toLocaleString()} (${simultaneityPct}%)`
+      );
+    } else {
+      insights.push(
+        `Worst case: all ${totalDevices.toLocaleString()} devices downloading at the same time`
+      );
+    }
+
+    insights.push(
+      `Per-device bandwidth: ${totalCacheKbps.toLocaleString()} Kbps ÷ ${simultaneousDevices.toLocaleString()} = ~${Math.round(perDeviceKbps).toLocaleString()} Kbps`
+    );
+
+    insights.push(
+      `Time to deliver ${contentPerDeviceMB.toLocaleString()} MB @ ~${Math.round(perDeviceKbps).toLocaleString()} Kbps = ${downloadTimeFormatted}`
+    );
+
+    // Mitigation notes
+    const mitigations = [];
+    mitigations.push(
+      "Configure update rings to stagger downloads across the fleet — reduces the number of devices pulling content at the same time."
+    );
+    if (p2pEnabled) {
+      mitigations.push(
+        "Peer-to-peer (Delivery Optimization peering) is enabled — devices can source content from each other, further offloading the cache node."
+      );
+    } else {
+      mitigations.push(
+        "Peer-to-peer is disabled — enabling DO peering would let devices source content from each other and reduce cache node load."
+      );
+    }
+
+    return {
+      simultaneousDevices,
+      simultaneityPct: simultaneityPct || 100,
+      totalCacheKbps,
+      perDeviceKbps: Math.round(perDeviceKbps),
+      contentPerDeviceMB,
+      downloadTimeSec: Math.round(downloadTimeSec),
+      downloadTimeFormatted,
+      insights,
+      mitigations
+    };
+  },
+
+  /**
    * Generate complete sizing recommendation for a single site.
    */
   sizeSite(site, contentTypeIds) {
@@ -130,6 +225,17 @@ const SizingEngine = {
     const contentPerDevice = this.estimateContentPerDevice(contentTypeIds);
     const totalMonthlyContentGB = Math.round(totalDevices * contentPerDevice / 1024);
     const osRecommendation = this.recommendOS(category, site.preferredOS || "no-preference");
+
+    // Peak delivery analysis — uses daily content estimate (monthly / 30)
+    const dailyContentPerDeviceMB = Math.round(contentPerDevice / 30) || 1;
+    const peakDelivery = this.calculatePeakDelivery(
+      totalDevices,
+      category.hardware.nicGbps,
+      dailyContentPerDeviceMB,
+      site.simultaneityPct || 100,
+      site.p2pEnabled !== false,
+      nodeCount
+    );
 
     return {
       siteName: site.name || "Unnamed Site",
@@ -160,7 +266,8 @@ const SizingEngine = {
         utilizationPercent: monthlyThroughput > 0
           ? Math.min(100, Math.round(totalMonthlyContentGB / monthlyThroughput * 100))
           : 0
-      }
+      },
+      peakDelivery
     };
   }
 };

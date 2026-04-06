@@ -39,6 +39,12 @@ const ExportEngine = {
         recommendedOS: r.sizing.os.primary,
         monthlyThroughputGB: r.sizing.network.monthlyThroughputGB,
         estimatedMonthlyContentGB: r.sizing.contentEstimate.totalMonthlyGB,
+        peakDelivery: {
+          simultaneityPct: r.sizing.peakDelivery.simultaneityPct,
+          simultaneousDevices: r.sizing.peakDelivery.simultaneousDevices,
+          perDeviceKbps: r.sizing.peakDelivery.perDeviceKbps,
+          downloadTime: r.sizing.peakDelivery.downloadTimeFormatted
+        },
         policies: policyList,
         warnings: r.policies.warnings.map(w => w.message),
         notes: r.policies.info
@@ -76,6 +82,7 @@ const ExportEngine = {
       "Site Category", "Bandwidth (Mbps)", "Cache Nodes", "CPU Cores",
       "RAM", "Disk Space", "NIC Speed", "Recommended OS",
       "Monthly Throughput (GB)", "Est. Monthly Content (GB)",
+      "Simultaneity %", "Simultaneous Devices", "Per-Device Kbps", "Download Time",
       "Key Policies", "Warnings"
     ];
 
@@ -94,6 +101,10 @@ const ExportEngine = {
       this._csvEscape(site.recommendedOS),
       site.monthlyThroughputGB,
       site.estimatedMonthlyContentGB,
+      site.peakDelivery.simultaneityPct,
+      site.peakDelivery.simultaneousDevices,
+      site.peakDelivery.perDeviceKbps,
+      this._csvEscape(site.peakDelivery.downloadTime),
       this._csvEscape(Object.entries(site.policies).map(([k, v]) => k + "=" + v).join("; ")),
       this._csvEscape(site.warnings.join("; "))
     ]);

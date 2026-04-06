@@ -502,6 +502,64 @@ header p {
   color: #0078d4;
 }
 
+/* ===== Peak Delivery Analysis ===== */
+.peak-intro {
+  font-size: 0.88rem;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.peak-walkthrough {
+  background: #f0f6fc;
+  border: 1px solid #d0e3f5;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-top: 10px;
+  font-size: 0.88rem;
+}
+
+.peak-walkthrough ol {
+  margin: 6px 0 0 18px;
+  color: #333;
+}
+
+.peak-walkthrough ol li {
+  margin-bottom: 4px;
+}
+
+.peak-mitigations {
+  background: #f0fff4;
+  border: 1px solid #c6efce;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-top: 8px;
+  font-size: 0.88rem;
+}
+
+.peak-mitigations ul {
+  margin: 6px 0 0 18px;
+  color: #333;
+}
+
+.peak-mitigations ul li {
+  margin-bottom: 4px;
+}
+
+.label-hint {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #e1e4e8;
+  color: #555;
+  font-size: 0.72rem;
+  text-align: center;
+  line-height: 16px;
+  cursor: help;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
 /* ===== Footer ===== */
 footer {
   text-align: center;
