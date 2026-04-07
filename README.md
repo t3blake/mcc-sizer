@@ -150,6 +150,20 @@ Static site with no backend. Designed for GitHub Pages:
 2. Enable GitHub Pages (Settings → Pages → Deploy from branch → `master`, folder `/`)
 3. Access at `https://<username>.github.io/mcc-sizer/`
 
+## Tests
+
+Automated tests cover the sizing engine, policy engine, CSV parsing, and peak delivery math using Node's built-in test runner (Node 18+, no dependencies):
+
+```
+node --test tests/*.test.js
+```
+
+70 tests across 4 suites:
+- **sizing.test.js** — site categorization boundaries, node count, throughput interpolation, content estimates, OS recommendations, full `sizeSite` integration
+- **policies.test.js** — download mode/scope combinations, VPN/proxy warnings, wireless P2P warnings, multi-node warnings
+- **csv.test.js** — line parsing, quoted values, comment row skipping, missing columns, optional fields, edge cases
+- **peak-delivery.test.js** — verified against the known 15,244-device example, simultaneity scaling, multi-node throughput, mitigation messages
+
 ## Data sources
 
 | Source | What it provides |
